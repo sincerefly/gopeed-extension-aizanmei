@@ -1,0 +1,22 @@
+{
+  "name": "gopeed-extention-aizanmei",
+  "author": "sincerefly",
+  "title": "爱赞美音乐下载",
+  "description": "爱赞美(www.zanmei.ai) 插件",
+  "icon": "icon.ico",
+  "version": "1.0.0",
+  "homepage": "https://github.com/sincerefly/gopeed-extension-aizanmei",
+  "repository": {
+    "url": "https://github.com/sincerefly/gopeed-extension-aizanmei"
+  },
+  "scripts": [
+    {
+      "event": "onResolve",
+      "match": {
+        "urls": ["*://www.zanmei.ai/*"]
+      },
+      "entry": "dist/index.js"
+    }
+  ],
+  "settings": []
+}
