@@ -4,7 +4,7 @@
   "title": "爱赞美音乐下载",
   "description": "爱赞美(www.zanmei.ai) 插件",
   "icon": "icon.ico",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "homepage": "https://github.com/sincerefly/gopeed-extension-aizanmei",
   "repository": {
     "url": "https://github.com/sincerefly/gopeed-extension-aizanmei"
@@ -18,5 +18,37 @@
       "entry": "dist/index.js"
     }
   ],
-  "settings": []
+  "settings": [
+    {
+      "name": "ua",
+      "title": "User-Agent",
+      "description": "HTTP User-Agent header",
+      "type": "string",
+      "value": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.47"
+    },
+    {
+      "name": "cookie",
+      "title": "Cookie",
+      "description": "登录后从请求 Header 中手动获取的 Cookie",
+      "type": "string",
+      "value": ""
+    },
+    {
+      "name": "quality",
+      "title": "默认品质",
+      "description": "如未添加 Cookie 只能选择标准品质",
+      "type": "string",
+      "value": "songlow",
+      "options": [
+        {
+          "label": "标准品质",
+          "value": "songlow"
+        },
+        {
+          "label": "高品质",
+          "value": "songhigh"
+        }
+      ]
+    }
+  ]
 }

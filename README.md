@@ -1,19 +1,15 @@
 # Gopeed Extension Aizanmei
 
-## Project setup
+Download YouTube videos easily with [Gopeed](https://gopeed.com/).
 
-```
-npm install
-```
+## Install
 
-### Compiles and hot-reloads for development
+Open the `Gopeed` extension page, enter `https://github.com/sincerefly/gopeed-extension-aizanmei`, and click install.
 
-```
-npm run dev
-```
+## Usage
 
-### Compiles and minifies for production
+Create task with zanmei.ai music url, and click `Download` button, then the music will be resolved and ready to download.
 
-```
-npm run build
-```
+## Useful Links
+
+- [How to develop a gopeed extension](https://docs.gopeed.com/dev-extension.html)
