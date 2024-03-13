@@ -12,11 +12,11 @@ gopeed.events.onResolve(async function(ctx) {
   if (gopeed.settings.cookie == "") {
     files = await parserAnonymousDownloadUrl(ctx)
   
+  // Authorized with Cookie
   } else {
     files = await parserAuthorizedDownloadUrl(ctx)
   }
 
-  // Authorized with Cookie
   ctx.res = {
     name: "爱赞美诗歌下载",
     files: files,
@@ -53,7 +53,7 @@ async function parserAnonymousDownloadUrl(ctx) {
   
   const downName = `${name}.mp3`;
 
-  var files = [
+  return [
     {
       name: downName,
       req: {
@@ -61,9 +61,7 @@ async function parserAnonymousDownloadUrl(ctx) {
       }
     }
   ]
-  return files
 }
-
 
 async function getSongId(ctx) {
   const resp = await fetch(ctx.req.url, {
@@ -112,7 +110,7 @@ async function parserAuthorizedDownloadUrl(ctx) {
     downUrl = json["down"]["url"];
   }
 
-  var files = [
+  return [
     {
       name: downName,
       req: {
@@ -120,5 +118,4 @@ async function parserAuthorizedDownloadUrl(ctx) {
       },
     }
   ]
-  return files
 }
