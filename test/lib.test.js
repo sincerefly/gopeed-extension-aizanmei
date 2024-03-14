@@ -1,5 +1,6 @@
 // test/calculator.test.js
 import { expect } from 'chai';
+import * as libbase from '../src/lib/base.js';
 import * as libsong from '../src/lib/song.js';
 
 // 运行测试用例前先修改为自己的 Cookie
@@ -7,12 +8,12 @@ const cookie = "PHPSESSID=xxx; azm-user[id]=xxx; azm-user[name]=xxx; azm-user[ha
 
 // 以下无需修改
 const songWebUrl = "https://www.zanmei.ai/song/52195.html";
-const songId = "65f0090e3c3f0b45810b53d3"
+const songRel = "65f0090e3c3f0b45810b53d3"
 const songName = "如果"
 const songWebPath = "/song/52195.html";
 const songPlayUrl = "https://play.zanmei.co/song/p/52195.mp3"
 
-const song2Id = "5162d1f07d4c50078848a510"
+const song2Rel = "5162d1f07d4c50078848a510"
 const song2Name = "脚步"
 const song2LowUrl = "https://down.zanmei.ai/songlow/5162d1f07d4c50078848a510/4f6fd8967f01ef94.mp3"
 const song2HighUrl = "https://down.zanmei.ai/songhigh/5162d1f07d4c50078848a510/f634948e364de292.mp3"
@@ -23,11 +24,11 @@ describe('Song', function() {
   // 转换播放地址
   describe('generate paly url', function() {
     it('should return play url when web url', function() {
-        const result = libsong.AnonymousWebUrlToPlayUrl(songWebUrl);
+        const result = libsong.songWebUrlToPlayUrl(songWebUrl);
         expect(result).to.equal(songPlayUrl);
     });
     it('should return play url when web path', function() {
-      const result =  libsong.AnonymousWebUrlToPlayUrl(songWebPath);
+      const result =  libsong.songWebUrlToPlayUrl(songWebPath);
       expect(result).to.equal(songPlayUrl);
     });
   });
@@ -37,7 +38,7 @@ describe('Song', function() {
   describe('fetch web html content', function() {
     it('should return web html content', async function() {
         var settings = {"ua": ua}
-        const result = await libsong.FetchSongWebHtmlAnonymous(songWebUrl, settings);
+        const result = await libbase.FetchWebHtml(songWebUrl, settings);
         expect(result).to.have.lengthOf.above(0);
         songWebHtml = result;
     });
@@ -46,16 +47,16 @@ describe('Song', function() {
   // 解析歌曲名称
   describe('parser song name', function() {
     it('should return song name', async function() {
-        const result = libsong.ParserSongName(songWebHtml);
+        const result = libsong.parserSongName(songWebHtml);
         expect(result).to.equal(songName);
     });
   });
 
   // 解析歌曲id
-  describe('parser song id', function() {
-    it('should return song id', function() {
-        const result = libsong.ParserSongId(songWebHtml);
-        expect(result).to.equal(songId);
+  describe('parser song rel', function() {
+    it('should return song rel', function() {
+        const result = libsong.parserSongRel(songWebHtml);
+        expect(result).to.equal(songRel);
     });
   });
 
@@ -66,12 +67,12 @@ describe('Song', function() {
     // 获取 Meta 内容
     it('should return down meta json', async function() {
         var settings = {"ua": ua, "cookie": cookie}
-        let result = await libsong.FetchSongDownMetaJson(songId, settings);
+        let result = await libsong.FetchSongDownMetaJson(songRel, settings);
         expect(result["ok"]).equal(false);
         // console.log(JSON.stringify(result));
         // {"ok":false,"msg":"非常抱歉，本专辑歌曲仅提供低音质试听，不提供下载！"}
 
-        result = await libsong.FetchSongDownMetaJson(song2Id, settings);
+        result = await libsong.FetchSongDownMetaJson(song2Rel, settings);
         expect(result["ok"]).equal(true);
         expect(result["song"]).equal(song2Name);
         expect(result["play"]["url"]).equal(song2LowUrl);
@@ -85,13 +86,13 @@ describe('Song', function() {
 
     // 解析普通品质下载地址
     it('should get down low url', async function() {
-      let result = await libsong.GetLowMP3UrlFromMetaJson(songDownMetaJson);
+      let result = await libsong.lowMp3Url(songDownMetaJson);
       expect(result).equal(song2LowUrl);
     });
 
     // 解析高品质下载地址
     it('should get down high url', async function() {
-      let result = await libsong.GetHighMP3UrlFromMetaJson(songDownMetaJson);
+      let result = await libsong.highMp3Url(songDownMetaJson);
       expect(result).equal(song2HighUrl);
     });
   });
