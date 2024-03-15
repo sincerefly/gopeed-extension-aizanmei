@@ -3,6 +3,7 @@
 // 脚步 https://www.zanmei.ai/song/11322.html 高品质 & 标准品质
 // 幸福 https://www.zanmei.ai/album/blessed.html 标准品质试听
 // 帐幕 https://www.zanmei.ai/album/1717.html 高品质 & 标准品质
+// 歌单 https://www.zanmei.ai/box/874891.html
 
 import * as libbase from "./lib/base.js";
 import * as libsong from "./lib/song.js";
@@ -11,16 +12,20 @@ import * as libalbum from "./lib/album.js";
 const MediaType = {
   SONG: "song",
   ALBUM: "album",
+  BOX: "box",
 };
 
 function judgeMediaTypeFromUrl(url) {
   const songRegex = /\/song\//i;
   const albumRegex = /\/album\//i;
+  const boxRegex = /\/box\//i;
 
   if (songRegex.test(url)) {
     return MediaType.SONG;
   } else if (albumRegex.test(url)) {
     return MediaType.ALBUM;
+  } else if (boxRegex.test(url)) {
+    return MediaType.BOX;
   } else {
     return "unknown";
   }
@@ -29,6 +34,7 @@ function judgeMediaTypeFromUrl(url) {
 gopeed.events.onResolve(async function (ctx) {
   const mediaType = judgeMediaTypeFromUrl(ctx.req.url);
 
+  let hubName = "爱赞美诗歌下载";
   let files = [];
 
   // 媒体类型：歌曲
@@ -37,7 +43,15 @@ gopeed.events.onResolve(async function (ctx) {
 
     // 媒体类型：专辑
   } else if (mediaType === MediaType.ALBUM) {
-    files = await handleAlbum(ctx);
+    let [hubName, files] = await handleAlbum(ctx);
+    hubName = hubName;
+    files = files;
+
+    // 媒体类型：歌单
+  } else if (mediaType === MediaType.BOX) {
+    let [hubName, files] = await handleAlbum(ctx); // 能够复用专辑的处理逻辑
+    hubName = hubName;
+    files = files;
 
     // 媒体类型：未知
   } else {
@@ -45,7 +59,7 @@ gopeed.events.onResolve(async function (ctx) {
   }
 
   ctx.res = {
-    name: "爱赞美诗歌下载",
+    name: hubName,
     files: files,
   };
 });
@@ -63,7 +77,7 @@ async function handleAlbum(ctx) {
 
   const albumWebHtml = await libbase.FetchWebHtml(albumWebUrl, gopeed.settings);
 
-  const albumList = libalbum.ParserSongWebUrlList(albumWebHtml);
+  const [albumName, albumList] = libalbum.ParserSongWebUrlList(albumWebHtml);
 
   let files = [];
   for (var i = 0; i < albumList.length; i++) {
@@ -85,5 +99,5 @@ async function handleAlbum(ctx) {
     };
     files.push(file);
   }
-  return files;
+  return [albumName, files];
 }
