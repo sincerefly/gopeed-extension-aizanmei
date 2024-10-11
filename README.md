@@ -1,6 +1,6 @@
 # Gopeed Extension Aizanmei
 
-Download YouTube videos easily with [Gopeed](https://gopeed.com/).
+Download Aizanmei Music easily with [Gopeed](https://gopeed.com/).
 
 ## Install
 
