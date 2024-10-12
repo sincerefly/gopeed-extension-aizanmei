@@ -41,8 +41,12 @@ export function ParserSongWebUrlList(albumWebHtml) {
     */
     let name = $(element).find("td.name a").first().text().trim();
     let href = $(element).find("td.name a").attr("href").trim();
-    let rel = $(element).find("td.btn a.btn_play").attr("rel").trim();
-
+    // let rel = $(element).find("td.btn a.btn_play").attr("rel")?.trim() ?? "";  // 兼容获取不到 btn_play
+    let rel = $(element).find("td.chk input").attr("value")?.trim() ?? "";  // 兼容获取不到 btn_play
+    if (rel == "") {
+      throw new MessageError("td.chk input 'value' attr is empty");
+    }
+    
     let item = {
       name: name,
       rel: rel,

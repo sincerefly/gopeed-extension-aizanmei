@@ -34,24 +34,28 @@ function judgeMediaTypeFromUrl(url) {
 gopeed.events.onResolve(async function (ctx) {
   const mediaType = judgeMediaTypeFromUrl(ctx.req.url);
 
-  let hubName = "爱赞美诗歌下载";
-  let files = [];
+  let resHubName = "爱赞美诗歌下载";
+  let resFiles = [];
+
+  gopeed.logger.info("media_type", mediaType);
+  // throw new MessageError(mediaType);
 
   // 媒体类型：歌曲
   if (mediaType === MediaType.SONG) {
-    files = await handleSong(ctx);
+    resFiles = await handleSong(ctx);
 
     // 媒体类型：专辑
   } else if (mediaType === MediaType.ALBUM) {
     let [hubName, files] = await handleAlbum(ctx);
-    hubName = hubName;
-    files = files;
+    resHubName = hubName;
+    resFiles = files;
+    // throw new MessageError(resFiles[0]["name"]);
 
     // 媒体类型：歌单
   } else if (mediaType === MediaType.BOX) {
     let [hubName, files] = await handleAlbum(ctx); // 能够复用专辑的处理逻辑
-    hubName = hubName;
-    files = files;
+    resHubName = hubName;
+    resFiles = files;
 
     // 媒体类型：未知
   } else {
@@ -59,8 +63,8 @@ gopeed.events.onResolve(async function (ctx) {
   }
 
   ctx.res = {
-    name: hubName,
-    files: files,
+    name: resHubName,
+    files: resFiles,
   };
 });
 
