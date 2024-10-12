@@ -8,17 +8,20 @@
 import * as libbase from "./lib/base.js";
 import * as libsong from "./lib/song.js";
 import * as libalbum from "./lib/album.js";
+import * as libvideo from "./lib/video.js";
 
 const MediaType = {
   SONG: "song",
   ALBUM: "album",
   BOX: "box",
+  VIDEO: "video",
 };
 
 function judgeMediaTypeFromUrl(url) {
   const songRegex = /\/song\//i;
   const albumRegex = /\/album\//i;
   const boxRegex = /\/box\//i;
+  const videoRegex = /\/video\//i;
 
   if (songRegex.test(url)) {
     return MediaType.SONG;
@@ -26,6 +29,8 @@ function judgeMediaTypeFromUrl(url) {
     return MediaType.ALBUM;
   } else if (boxRegex.test(url)) {
     return MediaType.BOX;
+  } else if (videoRegex.test(url)) {
+    return MediaType.VIDEO;
   } else {
     return "unknown";
   }
@@ -57,6 +62,12 @@ gopeed.events.onResolve(async function (ctx) {
     resHubName = hubName;
     resFiles = files;
 
+    // 媒体类型：视频
+  } else if (mediaType === MediaType.VIDEO) {
+    let [hubName, files] = await handleVideo(ctx);
+    resHubName = hubName;
+    resFiles = files;
+  
     // 媒体类型：未知
   } else {
     throw new MessageError("未知的媒体类型");
@@ -103,5 +114,14 @@ async function handleAlbum(ctx) {
     };
     files.push(file);
   }
+  return [albumName, files];
+}
+
+// 视频
+async function handleVideo(ctx) {
+  const videoWebUrl = ctx.req.url;
+  const videoWebHtml = await libbase.FetchWebHtml(videoWebUrl, gopeed.settings);
+  const [albumName, files] = libvideo.ParserVideoWebUrlList(videoWebHtml);
+
   return [albumName, files];
 }
