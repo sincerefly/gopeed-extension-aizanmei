@@ -1,6 +1,12 @@
 import * as cheerio from "cheerio";
 import * as libbase from "./base.js";
 
+// 接口或缓存里仍可能返回旧试听域名，统一为新域名
+function normalizePlayHost(url) {
+  if (!url) return url;
+  return url.replace(/https?:\/\/play\.zanmei\.co(?=\/|$)/gi, "https://play.izanm.org");
+}
+
 // 将歌曲网页 URL 转换为播放 URL（试听 URL）
 export function songWebUrlToPlayUrl(path) {
   const reg = /song\/(.*).html/;
@@ -57,7 +63,7 @@ export function lowMp3Url(downMeta) {
   if (!downMeta["ok"]) {
     return "";
   }
-  return downMeta["play"]["url"];
+  return normalizePlayHost(downMeta["play"]["url"]);
 }
 
 // 从 DownMeta 中获取高品质的 MP3 URL
@@ -67,7 +73,7 @@ export function highMp3Url(downMeta) {
   }
   // 如果没有高品质降级为标准品质
   if (!downMeta["down"]["status"]) {
-    return downMeta["play"]["url"];
+    return normalizePlayHost(downMeta["play"]["url"]);
   }
   return downMeta["down"]["url"];
 }
@@ -108,7 +114,7 @@ async function getSongFileAuthorized(songWebUrl, settings) {
 
   // 当歌曲不提供下载时下载试听版本
   if (!downMeta["ok"]) {
-    return getSongFileAnonymous(ctx);
+    return getSongFileAnonymous(songWebUrl, settings);
   }
 
   const downName = `${downMeta["song"]}.mp3`;
