@@ -13,7 +13,7 @@ export function songWebUrlToPlayUrl(path) {
   // songShortId from url, e.g. 52195
   const songShortId = matched[1];
 
-  return `https://play.zanmei.co/song/p/${songShortId}.mp3`;
+  return `https://play.izanm.org/song/p/${songShortId}.mp3`;
 }
 
 // 从 HTML 页面中解析出歌曲名称

@@ -11,7 +11,7 @@ const songWebUrl = "https://www.zanmei.ai/song/52195.html";
 const songRel = "65f0090e3c3f0b45810b53d3"
 const songName = "如果"
 const songWebPath = "/song/52195.html";
-const songPlayUrl = "https://play.zanmei.co/song/p/52195.mp3"
+const songPlayUrl = "https://play.izanm.org/song/p/52195.mp3"
 
 const song2Rel = "5162d1f07d4c50078848a510"
 const song2Name = "脚步"
